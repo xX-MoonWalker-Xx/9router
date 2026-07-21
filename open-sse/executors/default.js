@@ -169,6 +169,20 @@ export class DefaultExecutor extends BaseExecutor {
     for (const hook of desc.hooks || []) HEADER_HOOKS[hook]?.(headers, credentials);
     applyAuth(headers, desc, credentials);
 
+    // --- UNIVERSAL ROO CODE HEADER INJECTION ---
+    // Placed here, it applies to BOTH Anthropic and OpenAI compatible providers
+    Object.assign(headers, {
+      "User-Agent": "RooCode/3.34.8",
+      "X-Title": "Roo Code",
+      "HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
+      "X-Stainless-Runtime-Version": "v22.20.0",
+      "X-Stainless-Runtime": "node",
+      "X-Stainless-Arch": "x64",
+      "X-Stainless-OS": "Linux",
+      "X-Stainless-Lang": "js"
+    });
+
+    console.log("modified headers");
     // Strip first-party Claude Code identity headers for non-Anthropic anthropic-compatible upstreams
     if (this.provider?.startsWith?.("anthropic-compatible-")) {
       const baseUrl = credentials?.providerSpecificData?.baseUrl || "";
