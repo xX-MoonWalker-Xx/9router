@@ -175,6 +175,22 @@ async function fetchCompatibleModelIds(connection) {
     return [];
   }
 
+   // --- AGENTROUTER HEADER INJECTION ---
+  const psd = connection.providerSpecificData || {};
+  if (connection.provider?.startsWith("openai-compatible-") &&
+      psd.baseUrl?.includes("agentrouter.org")) {
+    Object.assign(headers, {
+      "User-Agent": "RooCode/3.34.8",
+      "X-Title": "Roo Code",
+      "HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
+      "X-Stainless-Runtime-Version": "v22.20.0",
+      "X-Stainless-Runtime": "node",
+      "X-Stainless-Arch": "x64",
+      "X-Stainless-OS": "Linux",
+      "X-Stainless-Lang": "js"
+    });
+  }
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
