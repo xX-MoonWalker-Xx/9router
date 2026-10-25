@@ -190,6 +190,20 @@ export class DefaultExecutor extends BaseExecutor {
     for (const hook of desc.hooks || []) HEADER_HOOKS[hook]?.(headers, credentials);
     applyAuth(headers, desc, credentials);
 
+      // --- AGENTROUTER HEADER INJECTION ---
+    if (this.provider?.startsWith("openai-compatible-") &&
+      credentials?.providerSpecificData?.baseUrl?.includes("agentrouter.org")) {
+    Object.assign(headers, {
+        "User-Agent": "RooCode/3.34.8",
+        "X-Title": "Roo Code",
+        "HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
+        "X-Stainless-Runtime-Version": "v22.20.0",
+        "X-Stainless-Runtime": "node",
+        "X-Stainless-Arch": "x64",
+        "X-Stainless-OS": "Linux",
+        "X-Stainless-Lang": "js"
+      });
+    }
     // anthropic-compatible-* nodes serving a real Claude model sit in front of
     // Anthropic itself (a rotating multi-account proxy, a corporate gateway),
     // so the request needs the same beta flags the `claude` provider sends:
